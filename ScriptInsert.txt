@@ -1,0 +1,149 @@
+INSERT  INTO  Branch   VALUES ('Br01','สาขาสถาบันเทคโนโลยีพระจอมเกล้าเจ้าคุณทหารลาดกระบัง','ที่อยู่：เลขที่3 ถนนฉลองกรุง แขวงลําประเทว เขตลาดกระบัง กรุงเทพมหานคร 10520');
+INSERT  INTO  Branch   VALUES ('Br02','สาขาซอยรามอินทรา21','ที่อยุ่: รามอินทรา 19 แยก 20 แขวงอนุสาวรีย์ เขตบางเขน กรุงเทพมหานคร 10220');
+INSERT  INTO  Branch   VALUES ('Br03','สาขาซัสโก้เสนานิคม1','ที่อยู่：ถนนเสนานิคม 1 แขวงเสนานิคม เขตจตุจักร กรุงเทพมหานคร 10900');
+
+INSERT  INTO  Role   VALUES ('R01','ผู้จัดการ');
+INSERT  INTO  Role   VALUES ('R02','พนักงานประจำ');
+INSERT  INTO  Role   VALUES ('R03','พนักงานพาร์ททาม');
+
+INSERT  INTO  Employee   VALUES ('E01','สมชาย','หมายมั่น','11051564154xx','061234xxxx','M',TO_DATE('26/07/1981','DD/MM/YYYY'),'Br01','R01','','W',TO_DATE('01/04/2016','DD/MM/YYYY'),'','30000');
+INSERT  INTO  Employee   VALUES ('E02','พรรณวดี','ศรีสังวาล','32515511005xx','091234xxxx','F',TO_DATE('18/04/1997','DD/MM/YYYY'),'Br01','R02','E01','W',TO_DATE('02/02/2021','DD/MM/YYYY'),'','18000');
+INSERT  INTO  Employee   VALUES ('E03','ธารณามัย','ไชยวงษ์','11051564157xx','081234xxxx','M',TO_DATE('05/01/2000','DD/MM/YYYY'),'Br01','R03','E01','W',TO_DATE('26/07/2022','DD/MM/YYYY'),'','9000');
+INSERT  INTO  Employee   VALUES ('E04','พงศกรณ์','อมรเดช','11041564154xx','064567xxxx','M',TO_DATE('14/10/1987','DD/MM/YYYY'),'Br02','R01','','W',TO_DATE('17/03/2017','DD/MM/YYYY'),'','30000');
+INSERT  INTO  Employee   VALUES ('E05','เนตรนภา','วลาลัย','11059564154xx','097890xxxx','F',TO_DATE('28/02/1999','DD/MM/YYYY'),'Br02','R02','E04','W',TO_DATE('21/02/2020','DD/MM/YYYY'),'','18000');
+INSERT  INTO  Employee   VALUES ('E06','ประนอม','พร้อมชน','11984888154xx','094966xxxx','M',TO_DATE('14/11/1989','DD/MM/YYYY'),'Br03','R01','','W',TO_DATE('26/01/2016','DD/MM/YYYY'),'','30000');
+INSERT  INTO  Employee   VALUES ('E07','เนตรวงแหวน','ดึงดัน','99885564154xx','077790xxxx','F',TO_DATE('11/02/1992','DD/MM/YYYY'),'Br03','R02','E06','W',TO_DATE('16/12/2019','DD/MM/YYYY'),'','18000');
+INSERT  INTO  Employee   VALUES ('E08','แฮมทาโร่','ยืนกำหมัด','88888444444xx','099990xxxx','F',TO_DATE('20/02/2000','DD/MM/YYYY'),'Br03','R03','E06','X',TO_DATE('06/07/2019','DD/MM/YYYY'),TO_DATE('12/12/2022','DD/MM/YYYY'),'9000');
+
+INSERT  INTO  Member   VALUES ('088887XXXX','สมหญิง','ยืนยงศักดิ์','11050064154xx','F',TO_DATE('21/01/1991','DD/MM/YYYY'),'A',TO_DATE('02/12/2019','DD/MM/YYYY'),'');
+INSERT  INTO  Member   VALUES ('068177XXXX','ปภาวดี','คงดี','18315151065xx','F',TO_DATE('21/03/2001','DD/MM/YYYY'),'A',TO_DATE('11/08/2020','DD/MM/YYYY'),'');
+INSERT  INTO  Member   VALUES ('063216XXXX','สุรศักดิ์','ธนพันธ์','32510054543xx','M',TO_DATE('07/05/1998','DD/MM/YYYY'),'A',TO_DATE('25/07/2021','DD/MM/YYYY'),'');
+INSERT  INTO  Member   VALUES ('088194XXXX','วรรณภา','จิตรยังดี','15120446504xx','F',TO_DATE('09/11/2000','DD/MM/YYYY'),'A',TO_DATE('13/01/2022','DD/MM/YYYY'),'');
+INSERT  INTO  Member   VALUES ('087743XXXX','เดชเดชา','เอกนุพงศ์','15112045115xx','M',TO_DATE('18/11/1996','DD/MM/YYYY'),'X',TO_DATE('06/07/2020','DD/MM/YYYY'),TO_DATE('13/10/2022','DD/MM/YYYY'));
+
+INSERT  INTO  CashCoupon   VALUES ('CC00','ไม่ได้ใช้คูปอง','0');
+INSERT  INTO  CashCoupon   VALUES ('CC01','ใช้คูปองส่วนลด 1 บาท/ใบเสร็จ','1');
+INSERT  INTO  CashCoupon   VALUES ('CC02','ใช้คูปองส่วนลด 5 บาท/ใบเสร็จ','5');
+INSERT  INTO  CashCoupon   VALUES ('CC03','ใช้คูปองส่วนลด 10 บาท/ใบเสร็จ','10');
+INSERT  INTO  CashCoupon   VALUES ('CC04','ใช้คูปองส่วนลด 50 บาท/ใบเสร็จ','50');
+INSERT  INTO  CashCoupon   VALUES ('CC05','ใช้คูปองส่วนลด 100 บาท/ใบเสร็จ','100');
+
+
+INSERT  INTO  DiscountType   VALUES ('DT01','Bath');
+INSERT  INTO  DiscountType   VALUES ('DT02','%');
+
+INSERT  INTO  ProductType   VALUES ('PT01','อาหารอุ่นพร้อมทาน','0','DT02');
+INSERT  INTO  ProductType   VALUES ('PT02','เครื่องดื่ม','5','DT02');
+INSERT  INTO  ProductType   VALUES ('PT03','ขนม','0','DT02');
+INSERT  INTO  ProductType   VALUES ('PT04','ของใช้ส่วนตัว','10','DT02');
+INSERT  INTO  ProductType   VALUES ('PT05','เครื่องปรุงอาหาร','0','DT02');
+INSERT  INTO  ProductType   VALUES ('PT06','ผลิตภัณฑ์ซักล้าง','20','DT02');
+
+INSERT  INTO  Product   VALUES ('P01','โอเด้ง','10','3','H','0','PT01','DT02');
+INSERT  INTO  Product   VALUES ('P02','สปาเก็ตตี้ขี้เมาไก่สไตล์เกาหลี','55','17','H','5','PT01','DT01');
+INSERT  INTO  Product   VALUES ('P03','ข้าวหน้าปลาไหลย่างญี่ปุ่น','299','90','H','0','PT01','DT01');
+INSERT  INTO  Product   VALUES ('P04','ซูชิปลาไหลย่างญี่ปุ่น','199','60','H','0','PT01','DT01');
+INSERT  INTO  Product   VALUES ('P05','ข้าวผัดกระเทียมเนื้อย่างพรีเมี่ยม','289','86','H','0','PT01','DT01');
+
+INSERT  INTO  Product   VALUES ('P06','โคโค่แม็ก 350 มล','50','15','H','10','PT02','DT01');
+INSERT  INTO  Product   VALUES ('P07','โทฟุซัง 180 มล','20','6','H','0','PT02','DT01');
+INSERT  INTO  Product   VALUES ('P08','ยูนิฟ 200 มล','36','11','H','0','PT02','DT01');
+INSERT  INTO  Product   VALUES ('P09','ลิปตัน 245 มล','28','8','H','6','PT02','DT01');
+INSERT  INTO  Product   VALUES ('P10','มิเนเร่ 500 มล','48','14','H','16','PT02','DT01');
+
+INSERT  INTO  Product   VALUES ('P11','เถ้าแก่น้อย 30 กรัม','40','16','H','8','PT03','DT01');
+INSERT  INTO  Product   VALUES ('P12','เทสโตฟิต 50 กรัม','20','6','H','0','PT03','DT01');
+INSERT  INTO  Product   VALUES ('P13','ฮาริโบ้ 30 กรัม','10','3','H','0','PT03','DT01');
+INSERT  INTO  Product   VALUES ('P14','กูลิโกะเพรทซ์  25 กรัม','10','3','H','5','PT03','DT01');
+INSERT  INTO  Product   VALUES ('P15','จูลี่ส์  25 กรัม','10','3','H','0','PT03','DT01');
+
+INSERT  INTO  Product   VALUES ('P16','สำลีก้าน','20','8','H','0','PT04','DT01');
+INSERT  INTO  Product   VALUES ('P17','แชมพูขจัดรังแค เฮดแอนด์โชว์เดอร์','189','107','H','10','PT04','DT01');
+INSERT  INTO  Product   VALUES ('P18','เจลอาบน้ำ protex','189','75','H','10','PT04','DT01');
+INSERT  INTO  Product   VALUES ('P19','โฟมล้างหน้า ดร.มนตรี','89','31','H','0','PT04','DT01');
+INSERT  INTO  Product   VALUES ('P20','ยาสีฟันคอลเกต เกลือสมุนไพร','60','19','H','0','PT04','DT01');
+
+INSERT  INTO  Product   VALUES ('P21','พริกไทยขาวป่น ไร่ทิพย์','25','9','H','0','PT05','DT01');
+INSERT  INTO  Product   VALUES ('P22','ซอสปรุงอาหาร แม็กกี้','20','6','H','0','PT05','DT01');
+INSERT  INTO  Product   VALUES ('P23','แป้งทอดกรอบ ครัววังทิพย์','35','13','H','6','PT05','DT01');
+INSERT  INTO  Product   VALUES ('P24','เกลือปรุงทิพย์','20','8','H','0','PT05','DT01');
+INSERT  INTO  Product   VALUES ('P25','ครีมเทียมข้นหวาน palace','20','7','H','2','PT05','DT01');
+
+INSERT  INTO  Product   VALUES ('P26','น้ำยาปรับผ้านุ่ม ดาวน์นี่','75','43','H','6','PT06','DT01');
+INSERT  INTO  Product   VALUES ('P27','แอทแทค 3D คลีน แอ็คชั่น','174','98','X','0','PT06','DT01');
+INSERT  INTO  Product   VALUES ('P28','สเปรย์ปรับอากาศ glade','132','71','H','17','PT06','DT01');
+INSERT  INTO  Product   VALUES ('P29','น้ำยาล้างห้องน้ำ vixol','45','19','H','0','PT06','DT01');
+INSERT  INTO  Product   VALUES ('P30','น้ำยาล้างจาน ไลปอนเอฟ','29','9','X','0','PT06','DT01');
+
+INSERT  INTO  ProductList   VALUES ('01','2','P28','B01');
+INSERT  INTO  ProductList   VALUES ('02','2','P02','B01');
+INSERT  INTO  ProductList   VALUES ('03','1','P21','B01');
+INSERT  INTO  ProductList   VALUES ('04','4','P23','B01');
+INSERT  INTO  ProductList   VALUES ('05','1','P16','B01');
+
+INSERT  INTO  ProductList   VALUES ('06','1','P19','B02');
+INSERT  INTO  ProductList   VALUES ('07','1','P17','B02');
+INSERT  INTO  ProductList   VALUES ('08','1','P15','B02');
+INSERT  INTO  ProductList   VALUES ('09','1','P13','B02');
+INSERT  INTO  ProductList   VALUES ('10','1','P11','B02');
+
+INSERT  INTO  ProductList   VALUES ('11','2','P21','B03');
+INSERT  INTO  ProductList   VALUES ('12','1','P20','B03');
+INSERT  INTO  ProductList   VALUES ('13','2','P12','B03');
+INSERT  INTO  ProductList   VALUES ('14','7','P11','B03');
+INSERT  INTO  ProductList   VALUES ('15','1','P09','B03');
+
+INSERT  INTO  ProductList   VALUES ('16','2','P26','B04');
+INSERT  INTO  ProductList   VALUES ('17','1','P24','B04');
+INSERT  INTO  ProductList   VALUES ('18','1','P22','B04');
+INSERT  INTO  ProductList   VALUES ('19','3','P20','B04');
+INSERT  INTO  ProductList   VALUES ('20','1','P10','B04');
+
+INSERT  INTO  ProductList   VALUES ('21','1','P05','B05');
+INSERT  INTO  ProductList   VALUES ('22','2','P10','B05');
+INSERT  INTO  ProductList   VALUES ('23','1','P15','B05');
+INSERT  INTO  ProductList   VALUES ('24','1','P20','B05');
+INSERT  INTO  ProductList   VALUES ('25','4','P25','B05');
+
+INSERT  INTO  ProductList   VALUES ('26','1','P25','B06');
+INSERT  INTO  ProductList   VALUES ('27','2','P15','B06');
+INSERT  INTO  ProductList   VALUES ('28','3','P05','B06');
+INSERT  INTO  ProductList   VALUES ('29','1','P20','B06');
+INSERT  INTO  ProductList   VALUES ('30','2','P10','B06');
+
+INSERT  INTO  ProductList   VALUES ('31','1','P20','B07');
+INSERT  INTO  ProductList   VALUES ('32','1','P16','B07');
+INSERT  INTO  ProductList   VALUES ('33','1','P12','B07');
+INSERT  INTO  ProductList   VALUES ('34','1','P08','B07');
+INSERT  INTO  ProductList   VALUES ('35','1','P04','B07');
+
+INSERT  INTO  ProductList   VALUES ('36','1','P06','B08');
+INSERT  INTO  ProductList   VALUES ('37','2','P01','B08');
+INSERT  INTO  ProductList   VALUES ('38','2','P20','B08');
+INSERT  INTO  ProductList   VALUES ('39','2','P11','B08');
+INSERT  INTO  ProductList   VALUES ('40','1','P15','B08');
+
+INSERT  INTO  ProductList   VALUES ('41','1','P24','B09');
+INSERT  INTO  ProductList   VALUES ('42','1','P12','B09');
+INSERT  INTO  ProductList   VALUES ('43','2','P07','B09');
+INSERT  INTO  ProductList   VALUES ('44','2','P05','B09');
+INSERT  INTO  ProductList   VALUES ('45','2','P01','B09');
+
+INSERT  INTO  Bill   VALUES ('B01',TO_DATE('12/12/2022','DD/MM/YYYY'),'088887XXXX','E02','CC01');
+INSERT  INTO  Bill   VALUES ('B02',TO_DATE('12/12/2022','DD/MM/YYYY'),'087743XXXX','E02','CC00');
+INSERT  INTO  Bill   VALUES ('B03',TO_DATE('12/12/2022','DD/MM/YYYY'),'','E02','CC00');
+INSERT  INTO  Bill   VALUES ('B04',TO_DATE('12/12/2022','DD/MM/YYYY'),'088194XXXX','E03','CC05');
+INSERT  INTO  Bill   VALUES ('B05',TO_DATE('13/12/2022','DD/MM/YYYY'),'','E03','CC00');
+INSERT  INTO  Bill   VALUES ('B06',TO_DATE('13/12/2022','DD/MM/YYYY'),'','E05','CC00');
+INSERT  INTO  Bill   VALUES ('B07',TO_DATE('13/12/2022','DD/MM/YYYY'),'','E05','CC00');
+INSERT  INTO  Bill   VALUES ('B08',TO_DATE('13/12/2022','DD/MM/YYYY'),'068177XXXX','E07','CC03');
+INSERT  INTO  Bill   VALUES ('B09',TO_DATE('13/12/2022','DD/MM/YYYY'),'','E07','CC00');
+
+INSERT  INTO  CheckDate   VALUES (TO_DATE('12/12/2022','DD/MM/YYYY'));
+INSERT  INTO  CheckDate   VALUES (TO_DATE('13/12/2022','DD/MM/YYYY'));
+
+////////////////////////////////////////////////////////
+UPDATE Bill
+SET BillCCID = 'CC00'
+WHERE BillNo	 = 'B02';
+

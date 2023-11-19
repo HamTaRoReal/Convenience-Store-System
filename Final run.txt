@@ -1,0 +1,130 @@
+SELECT BILLNO,BILLDATE,BILLEMP,BILLMEMTEL,PNAME,PRICEUNIT,PDISCOUNT,d1.DTNAME,PTDISCOUNT,d2.DTNAME,QTY,PRICEUNIT*QTY as price,((PRICEUNIT*(PTDISCOUNT/100))+PDISCOUNT)*QTY as discount,
+
+((PRICEUNIT-(PRICEUNIT*(PTDISCOUNT/100)))-PDISCOUNT)*QTY as total,
+
+(select sum(PRICEUNIT*QTY)
+from ((productlist inner join product on plpid = pid) inner join producttype on pproducttype = ptid)
+where plbillno = billno) as total_prices,
+
+(select sum(((PRICEUNIT*(PTDISCOUNT/100))+PDISCOUNT)*QTY)
+from ((productlist inner join product on plpid = pid) inner join producttype on pproducttype = ptid)
+where plbillno = billno) as total_discount,
+
+ccname as coupon,
+
+(select sum(((PRICEUNIT-(PRICEUNIT*(PTDISCOUNT/100)))-PDISCOUNT)*QTY)
+from ((productlist inner join product on plpid = pid) inner join producttype on pproducttype = ptid)
+where plbillno = billno) - CCDiscount as nettotal
+
+From ((((((bill  inner join productlist on plbillno = billno )inner join product on plpid = pid) inner join discounttype d1 on PDISCOUNTTYPE = d1.DTID) inner join ProductType on PPRODUCTTYPE = PTID) inner join discounttype d2 on PTDISCOUNTTYPE = d2.DTID) inner join cashcoupon on billccid = ccid) inner join checkdate on billdate = cddate;
+//รายการสินค้าในแต่ละบิล รายละเอียดต่างๆในบิล
+
+..................................................................................
+
+SELECT BILLNO,BILLDATE,BILLEMP,BILLMEMTEL,PNAME,
+
+(select sum(PRICEUNIT*QTY)
+from ((productlist inner join product on plpid = pid) inner join producttype on pproducttype = ptid)
+where plbillno = billno) as total_prices,
+
+(select sum(((PRICEUNIT*(PTDISCOUNT/100))+PDISCOUNT)*QTY)
+from ((productlist inner join product on plpid = pid) inner join producttype on pproducttype = ptid)
+where plbillno = billno) as total_discount,
+
+ccname as coupon,
+
+(select sum(((PRICEUNIT-(PRICEUNIT*(PTDISCOUNT/100)))-PDISCOUNT)*QTY)
+from ((productlist inner join product on plpid = pid) inner join producttype on pproducttype = ptid)
+where plbillno = billno) - CCDiscount as nettotal
+
+From ((((((bill  inner join productlist on plbillno = billno )inner join product on plpid = pid) inner join discounttype d1 on PDISCOUNTTYPE = d1.DTID) inner join ProductType on PPRODUCTTYPE = PTID) inner join discounttype d2 on PTDISCOUNTTYPE = d2.DTID) inner join cashcoupon on billccid = ccid) inner join checkdate on billdate = cddate
+Order By billno;
+//หน้าตาบิลที่อยู่ในใบเสร็จ
+
+..................................................................................
+
+select billno,billdate,billemp as employee_id,billmemtel as member_id,(select sum(PRICEUNIT*QTY)
+from ((productlist inner join product on plpid = pid) inner join producttype on pproducttype = ptid)
+where plbillno = billno) as total_prices,(select sum(((PRICEUNIT*(PTDISCOUNT/100))+PDISCOUNT)*QTY)
+from ((productlist inner join product on plpid = pid) inner join producttype on pproducttype = ptid)
+where plbillno = billno) as total_dis,(select sum(((PRICEUNIT-(PRICEUNIT*(PTDISCOUNT/100)))-PDISCOUNT)*QTY)
+from ((productlist inner join product on plpid = pid) inner join producttype on pproducttype = ptid)
+where plbillno = billno) as totals,ccname as coupon,(select sum(((PRICEUNIT-(PRICEUNIT*(PTDISCOUNT/100)))-PDISCOUNT)*QTY)
+from ((productlist inner join product on plpid = pid) inner join producttype on pproducttype = ptid)
+where plbillno = billno) - CCDiscount as nettotal
+from bill inner join cashcoupon on billccid = ccid
+order by billno;
+//ยอดรวมของแต่ละบิลแบบไม่โชว์รายการสินค้า
+
+..................................................................................
+
+select sum(((PRICEUNIT-(PRICEUNIT*(PTDISCOUNT/100)))-PDISCOUNT)*QTY) as all_bill
+from ((productlist inner join product on plpid = pid) inner join producttype on pproducttype = ptid);
+
+
+select billno,(select sum(PRICEUNIT*QTY)
+from ((productlist inner join product on plpid = pid) inner join producttype on pproducttype = ptid)
+where plbillno = billno) as total_prices
+from bill;
+
+
+select billno,(select sum(((PRICEUNIT-(PRICEUNIT*(PTDISCOUNT/100)))-PDISCOUNT)*QTY)
+from ((productlist inner join product on plpid = pid) inner join producttype on pproducttype = ptid)
+where plbillno = billno) as totals
+from bill;
+
+
+select billno,(select sum(((PRICEUNIT*(PTDISCOUNT/100))+PDISCOUNT)*QTY)
+from ((productlist inner join product on plpid = pid) inner join producttype on pproducttype = ptid)
+where plbillno = billno) as total_dis
+from bill;
+
+
+select billno,billdate,(select sum(((PRICEUNIT-(PRICEUNIT*(PTDISCOUNT/100)))-PDISCOUNT)*QTY)
+from ((productlist inner join product on plpid = pid) inner join producttype on pproducttype = ptid)
+where plbillno = billno) - CCDiscount as nettotal
+from bill inner join cashcoupon on billccid = ccid;
+
+
+select billno,(select sum(costunit*QTY)
+from ((productlist inner join product on plpid = pid) inner join producttype on pproducttype = ptid)
+where plbillno = billno) as cost
+from bill;
+//ยอดรวมบิลทั้งหมดทุกบิล
+
+..................................................................................
+
+SELECT cddate as At_Date
+
+,(select sum((select sum(((PRICEUNIT-(PRICEUNIT*(PTDISCOUNT/100)))-PDISCOUNT)*QTY)
+from ((productlist inner join product on plpid = pid) inner join producttype on pproducttype = ptid)
+where plbillno = billno) - CCDiscount)
+from bill inner join cashcoupon on billccid = ccid
+where billdate = cddate) as total_revenue
+
+,(select sum((select sum(costunit*QTY)
+from ((productlist inner join product on plpid = pid) inner join producttype on pproducttype = ptid)
+where plbillno = billno))
+from bill
+where billdate = cddate) as total_cost
+
+,((select sum((select sum(((PRICEUNIT-(PRICEUNIT*(PTDISCOUNT/100)))-PDISCOUNT)*QTY)
+from ((productlist inner join product on plpid = pid) inner join producttype on pproducttype = ptid)
+where plbillno = billno) - CCDiscount)
+from bill inner join cashcoupon on billccid = ccid
+where billdate = cddate) - (select sum((select sum(costunit*QTY)
+from ((productlist inner join product on plpid = pid) inner join producttype on pproducttype = ptid)
+where plbillno = billno))
+from bill
+where billdate = cddate)) as benefit
+
+FROM checkdate;
+//ยอดขายของแต่ละวัน แสดงรายรับ รายจ่าย กำไร
+
+..................................................................................
+
+SELECT BillNo,BillDate,emp.Emp as Emp_ID,emp.EmpFname as Emp_Fname,emp.EmpTname as Emp_Tname,role.RName as Role,branch.BrName as Branch,super.empfname as Super_Fname ,super.emptname as Super_Tname
+FROM (((Bill inner join Employee emp on Bill.BillEmp=emp.Emp) inner join Role on emp.EmpRole = Role.RID) inner join Branch on emp.EmpBrID = Branch.BrID) inner join Employee super on emp.SuperEmp = super.Emp 
+WHERE emp.WorkStatus='W'
+ORDER BY BillNo,Emp
+//พนักงานที่ออกบิล

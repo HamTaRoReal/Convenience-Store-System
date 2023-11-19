@@ -1,0 +1,114 @@
+CREATE  TABLE  Branch
+	(BrID 			VARCHAR2(10)		PRIMARY  KEY,
+	  BrName  			VARCHAR2(80)	NOT  NULL,
+	  BrAddr 		VARCHAR2(80)	NOT  NULL);
+
+
+CREATE  TABLE  Role
+	(RID 			VARCHAR2(10)		PRIMARY  KEY,
+	  RName  			VARCHAR2(80)	NOT  NULL);
+
+CREATE  TABLE  Employee
+	(Emp 			VARCHAR2(10)		PRIMARY  KEY,
+	  EmpFName  			VARCHAR2(80)	NOT  NULL,
+	  EmpTName  			VARCHAR2(80)	NOT  NULL,
+	  EmpNo	 			VARCHAR2(13)	NOT  NULL,
+	  EmpTel		 		VARCHAR2(10)	NOT  NULL,
+	  EmpSex 		VARCHAR2(1)	NOT  NULL,
+	  EmpBirthdate		DATE ,
+	  EmpBrID 		VARCHAR2(10)	NOT  NULL,
+	  EmpRole 		VARCHAR2(10)	NOT  NULL,
+	  SuperEmp		VARCHAR2(10),
+	  Workstatus 		VARCHAR2(10)	NOT  NULL,
+	  StartDate 		DATE	,
+	  EndDate 		DATE ,
+	  Salary  		NUMBER(8),
+	CONSTRAINT	Fk_EMPBr	FOREIGN	KEY(EmpBrID)
+		REFERENCES	Branch(BrID),
+	CONSTRAINT	Fk_EMPR	FOREIGN	KEY(EmpRole)
+		REFERENCES	Role(RID));
+
+CREATE  TABLE  Member
+	(MemTel  		VARCHAR2(10)		PRIMARY  KEY,
+	MemFName		VARCHAR2(80)	NOT  NULL,
+	MemTName		VARCHAR2(80)	NOT  NULL,
+	MemNo		VARCHAR2(13),
+	MemSex		VARCHAR2(1)
+		CONSTRAINT		sex_Nn1	NOT  NULL,
+	MemBirthdate		DATE,
+	MemStatus 		VARCHAR2(10)	NOT  NULL,
+	MemStartDate 		DATE ,
+	MemEndDate 		DATE);
+
+CREATE  TABLE  CashCoupon
+	(CCID		VARCHAR2(10)		PRIMARY  KEY,
+	CCName		VARCHAR2(80),
+	CCDiscount		NUMBER(3));
+
+CREATE  TABLE  DiscountType
+	(DTID 			VARCHAR2(10)		PRIMARY  KEY,
+	  DTName  			VARCHAR2(10)	NOT  NULL);
+
+CREATE  TABLE  ProductType
+	(PTID 			VARCHAR2(10)		PRIMARY  KEY,
+	  PTName  			VARCHAR2(80)	NOT  NULL,
+	  PTDiscount 			NUMBER(6)	NOT  NULL,
+	  PTDiscountType 		VARCHAR2(10)	NOT  NULL,
+	CONSTRAINT	Fk_PTDT	FOREIGN	KEY(PTDiscountType)
+		REFERENCES	DiscountType(DTID));
+
+CREATE  TABLE  Product
+	(PID 		VARCHAR(10)		PRIMARY  KEY,
+	  PName 		VARCHAR2(80)	NOT  NULL ,
+	  PriceUnit  		NUMBER(8),
+	  CostUnit  		NUMBER(8),
+	  PStatus 			VARCHAR2(10),
+	  PDiscount 			NUMBER(6),
+	  PProductType 			VARCHAR2(10),
+	  PDiscountType 			VARCHAR2(10),
+	CONSTRAINT	Fk_PPT	FOREIGN	KEY(PProductType)
+		REFERENCES	ProductType(PTID),
+	CONSTRAINT	Fk_PDT	FOREIGN	KEY(PDiscountType)
+		REFERENCES	DiscountType(DTID));
+
+CREATE  TABLE  Bill
+	(BillNo		VARCHAR2(12)		PRIMARY  KEY,
+	BillDate	DATE,
+	BillMemTel  		VARCHAR2(10),
+	BillEmp 			VARCHAR2(10),
+	BillCCID		VARCHAR2(10),
+	CONSTRAINT	Fk_BMT	FOREIGN	KEY(BillMemTel)
+		REFERENCES	Member(MemTel),
+	CONSTRAINT	Fk_BE	FOREIGN	KEY(BillEmp)
+		REFERENCES	Employee(Emp),
+	CONSTRAINT	Fk_BCC	FOREIGN	KEY(BillCCID)
+		REFERENCES	CashCoupon(CCID));
+
+CREATE  TABLE  CheckDate
+	(CDDate 			DATE		PRIMARY  KEY);
+
+CREATE  TABLE  ProductList
+	(Seq 			VARCHAR2(6)		PRIMARY  KEY,
+	  Qty  			NUMBER(6)	NOT  NULL,
+	  PLPID 		VARCHAR2(10)	NOT  NULL,
+	  PLBillNo		VARCHAR2(20)	NOT  NULL,
+	CONSTRAINT	Fk_PLP	FOREIGN	KEY(PLPID)
+		REFERENCES	Product(PID),
+	CONSTRAINT	Fk_PLBN	FOREIGN	KEY(PLBillNo)
+		REFERENCES	Bill(BillNo));
+
+/////////////////////////////////////////////////////////////////////////////////
+
+drop table checkdate;
+drop table productlist;
+drop table bill;
+drop table product;
+drop table producttype;
+drop table discounttype;
+drop table member;
+drop table cashcoupon;
+drop table employee;
+drop table role;
+drop table branch;
+
+

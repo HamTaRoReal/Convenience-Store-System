@@ -1,0 +1,193 @@
+select PTID as id,PTNAME as product_type,PTDISCOUNT as discount,DTNAME as type
+from ProductType ,DiscountType 
+where ProductType.PTDISCOUNTTYPE=DiscountType.DTID;
+//หาราคาที่ลดแต่ละแผนกสินค้า
+
+select PID as id,PNAME as product_name,PRICEUNIT,COSTUNIT,PDISCOUNT as discount,DTNAME as type
+from product ,DiscountType 
+where Product.PDISCOUNTTYPE=DiscountType.DTID;
+//หาราคาที่ลดแต่ละสินค้า
+
+select PID as product_id,PNAME as name,PRICEUNIT,COSTUNIT,PDISCOUNT as product_discount,DTNAME as type,PTNAME as product_type,PTDISCOUNT as product_type_discount,DTNAME as type
+from product ,DiscountType ,producttype
+where Product.PDISCOUNTTYPE=DiscountType.DTID 
+and Product.PPRODUCTTYPE=producttype.ptid;
+//แสดงสินค้าทุกชิ้นพร้อมส่วนลด และ ชื่อประเภทสินค้าพร้อมส่วนลด
+
+select *
+from bill,productlist
+where bill.billno=productlist.plbillno;
+
+select *
+from bill,productlist
+where bill.billno=productlist.plbillno and plbillno='B03';
+
+select * 
+from checkdate,bill
+where cddate=billdate;
+
+select bill.BILLNO,bill.BILLDATE,bill.BILLEMP ,product.PNAME,productlist.QTY,product.PRICEUNIT,product.PDISCOUNT,discounttype.DTNAME,cashcoupon.CCName,bill.BILLMEMTEL
+from bill,productlist,product,discounttype,cashcoupon
+where billno=plbillno and plpid = pid and PDiscountType=DTID and BILLCCID=CCID
+order by billno;
+//อันนี้ออกมา 15 แถว เพราะมีแค่ 3 bill ที่ใช้ coupon แล้ว bill ละ 5 seq
+
+select *
+from ((bill INNER JOIN productlist ON bill.billno=productlist.plbillno) INNER JOIN product 
+ON productlist.plpid=product.pid ) INNER JOIN
+(select f.pid,priceunit - (pdiscount / 100 * priceunit) as netprice
+from product f
+where pdiscounttype = 'DT02'
+UNION ALL
+select f.pid,priceunit - pdiscount 
+from product f
+where pdiscounttype = 'DT01') ON product.pid = product.pid
+where bill.billno='B03';
+//ไม่แน่ใจว่าแสดงอะไร แต่ออกมา  150 แถว
+
+select billno,pname as name,priceunit - (pdiscount / 100 * priceunit) as netprice,qty, qty * (priceunit - (pdiscount / 100 * priceunit)) as total
+from product,productlist,bill
+where pdiscounttype = 'DT02' and plpid = pid and plbillno = billno
+UNION ALL
+select billno,pname as name,priceunit - pdiscount,qty, qty * (priceunit - pdiscount) as total
+from product,productlist,bill
+where pdiscounttype = 'DT01' and plpid = pid and plbillno = billno
+order by billno;
+//ราคาสินค้าใน list เรียงตาม billno ออกมา 45 แถว
+
+select sum(qty * (priceunit - (pdiscount / 100 * priceunit))) as nettotal
+from bill inner join((product inner join productlist on pdiscounttype = 'DT02' and plpid = pid) inner join bill b on plbillno = billno)
+on b.billno = bill.billno
+union all
+select sum(qty * (priceunit - pdiscount))
+from bill inner join((product inner join productlist on pdiscounttype = 'DT01' and plpid = pid) inner join bill b on plbillno = billno)
+on b.billno = bill.billno;
+//มั่วได้ผลรวมราคาที่ลดแล้วเป็น % และ bath ตามลำดับ จากทุก bill
+
+**
+select billno,(
+select sum(pl1.qty * (p1.priceunit - (p1.pdiscount / 100 * p1.priceunit)))
+from (product p1 inner join productlist pl1 on p1.pdiscounttype = 'DT02' and pl1.plpid = p1.pid) inner join bill b1 on pl1.plbillno = b1.billno
+where b1.billno = bill.billno)
++(
+select sum(pl2.qty * (p2.priceunit - p2.pdiscount))
+from (product p2 inner join productlist pl2 on p2.pdiscounttype = 'DT01' and pl2.plpid = p2.pid) inner join bill b2 on pl2.plbillno = b2.billno
+where b2.billno = bill.billno) as nettotal
+from bill
+order by billno;
+//ยอดรวมแต่ละ bill แบบที่ยังไม่ลดด้วย coupon แต่บาง bill ไม่มีค่าอะไรแสดงออกมา นี่ก็งง...
+
+select bill.billno,(
+select sum(pl1.qty * (p1.priceunit - (p1.pdiscount / 100 * p1.priceunit)))
+from (product p1 inner join productlist pl1 on p1.pdiscounttype = 'DT02' and pl1.plpid = p1.pid) inner join bill b1 on pl1.plbillno = b1.billno
+where b1.billno = bill.billno)
++(
+select sum(pl2.qty * (p2.priceunit - p2.pdiscount))
+from (product p2 inner join productlist pl2 on p2.pdiscounttype = 'DT01' and pl2.plpid = p2.pid) inner join bill b2 on pl2.plbillno = b2.billno
+where b2.billno = bill.billno) - cashcoupon.ccdiscount as nettotal
+from bill inner join cashcoupon on bill.billccid = cashcoupon.ccid;
+//bill ที่ใช้ coupon ..3 row
+
+select bill.billno,(
+select sum(pl1.qty * (p1.priceunit - (p1.pdiscount / 100 * p1.priceunit)))
+from (product p1 inner join productlist pl1 on p1.pdiscounttype = 'DT02' and pl1.plpid = p1.pid) inner join bill b1 on pl1.plbillno = b1.billno
+where b1.billno = bill.billno)
++(
+select sum(pl2.qty * (p2.priceunit - p2.pdiscount))
+from (product p2 inner join productlist pl2 on p2.pdiscounttype = 'DT01' and pl2.plpid = p2.pid) inner join bill b2 on pl2.plbillno = b2.billno
+where b2.billno = bill.billno) - cashcoupon.ccdiscount as nettotal
+from bill inner join cashcoupon on bill.billccid = cashcoupon.ccid
+union
+select billno,(
+select sum(pl1.qty * (p1.priceunit - (p1.pdiscount / 100 * p1.priceunit)))
+from (product p1 inner join productlist pl1 on p1.pdiscounttype = 'DT02' and pl1.plpid = p1.pid) inner join bill b1 on pl1.plbillno = b1.billno
+where b1.billno = bill.billno)
++(
+select sum(pl2.qty * (p2.priceunit - p2.pdiscount))
+from (product p2 inner join productlist pl2 on p2.pdiscounttype = 'DT01' and pl2.plpid = p2.pid) inner join bill b2 on pl2.plbillno = b2.billno
+where b2.billno = bill.billno)
+from bill
+where billccid is null
+order by billno;
+//all bill use or not use coupon, but 'B07','B09' blank again..
+
+select cddate as at_date,(
+select sum((
+select sum(pl1.qty * (p1.priceunit - (p1.pdiscount / 100 * p1.priceunit)))
+from (product p1 inner join productlist pl1 on p1.pdiscounttype = 'DT02' and pl1.plpid = p1.pid) inner join bill b1 on pl1.plbillno = b1.billno
+where b1.billno = bill.billno)
++(
+select sum(pl2.qty * (p2.priceunit - p2.pdiscount))
+from (product p2 inner join productlist pl2 on p2.pdiscounttype = 'DT01' and pl2.plpid = p2.pid) inner join bill b2 on pl2.plbillno = b2.billno
+where b2.billno = bill.billno) - cashcoupon.ccdiscount)
+from bill inner join cashcoupon on bill.billccid = cashcoupon.ccid
+where bill.billdate = checkdate.cddate)
++(
+select sum((
+select sum(pl1.qty * (p1.priceunit - (p1.pdiscount / 100 * p1.priceunit)))
+from (product p1 inner join productlist pl1 on p1.pdiscounttype = 'DT02' and pl1.plpid = p1.pid) inner join bill b1 on pl1.plbillno = b1.billno
+where b1.billno = bill.billno)
++(
+select sum(pl2.qty * (p2.priceunit - p2.pdiscount))
+from (product p2 inner join productlist pl2 on p2.pdiscounttype = 'DT01' and pl2.plpid = p2.pid) inner join bill b2 on pl2.plbillno = b2.billno
+where b2.billno = bill.billno))
+from bill
+where billccid is null and bill.billdate = checkdate.cddate) as totalrevenue
+from checkdate
+order by cddate;
+//totalrevenue at that's day.
+
+
+select billno,priceunit - (pdiscount / 100 * priceunit) as netprice,qty, qty * (priceunit - (pdiscount / 100 * priceunit)) as total
+from product,productlist,bill
+where pdiscounttype = 'DT02' and plpid = pid and plbillno = billno
+UNION ALL
+select billno,priceunit - pdiscount,qty, qty * (priceunit - pdiscount) as total
+from product,productlist,bill
+where pdiscounttype = 'DT01' and plpid = pid and plbillno = billno
+order by billno;
+//list ไว้ดูราคาแต่ละอย่างง่ายๆ ไว้เทียบว่า ** คำนวณถูก ซึ่ง B01 รวม 491 ก็ตรงนะ แต่ B07,B09 ไม่มีอะไรเลย ทำไมกัน?
+
+select BillNo,BillDate,Emp,EmpFname,EmpTname,RName,BrName
+from Bill,Employee,Role,Branch 
+Where Bill.BillEmp=Employee.Emp and Employee.EmpRole = Role.RID and Employee.EmpBrID = Branch.BrID
+////////////////////////////////////////////////////////////////////////////
+
+SELECT BillNo,BillDate,emp.Emp as Emp_ID,emp.EmpFname as Emp_Fname,emp.EmpTname as Emp_Tname,role.RName as Role,branch.BrName as Branch,super.empfname as Super_Fname ,super.emptname as Super_Tname
+FROM (((Bill inner join Employee emp on Bill.BillEmp=emp.Emp) inner join Role on emp.EmpRole = Role.RID) inner join Branch on emp.EmpBrID = Branch.BrID) inner join Employee super on emp.SuperEmp = super.Emp 
+WHERE emp.WorkStatus='W'
+ORDER BY BillNo,Emp
+//พนักงานที่ออกบิล
+
+อยากทราบว่าใบเสร็จรับเงินที่ออกให้ลูกค้าออกโดยพนักงานคนไหนและพนักงานที่ออกทำงานตำแหน่งอะไร 
+พนังงานทำงานอยู่ในสาขาไหน และ ใครเป็นหัวหน้าของพนักงานคนนี้
+
+Select BILLNO,BILLDATE,BILLMEMTEL,BILLEMP,BILLCCID,PNAME,QTY,PRICEUNIT,PDISCOUNT,d1.DTNAME,PTDISCOUNT,d2.DTNAME,((PRICEUNIT-(PRICEUNIT*(PTDISCOUNT/100)))-PDISCOUNT)*QTY as Nettotal_piece,ccname
+From ((((bill  inner join productlist on plbillno = billno )inner join product on plpid = pid) inner join discounttype d1 on PDISCOUNTTYPE = d1.DTID) inner join ProductType on PPRODUCTTYPE = PTID) inner join discounttype d2 on PTDISCOUNTTYPE = d2.DTID
+
+Select BILLNO,BILLDATE,BILLMEMTEL,BILLEMP,BILLCCID,PNAME,QTY,PRICEUNIT,PDISCOUNT,d1.DTNAME,PTDISCOUNT,d2.DTNAME,((PRICEUNIT*(PTDISCOUNT/100))+PDISCOUNT)*QTY as discount,((PRICEUNIT-(PRICEUNIT*(PTDISCOUNT/100)))-PDISCOUNT)*QTY as total,(select sum(((PRICEUNIT*(PTDISCOUNT/100))+PDISCOUNT)*QTY)
+from ((productlist inner join product on plpid = pid) inner join producttype on pproducttype = ptid)
+where plbillno = billno) as total_discount,(select sum(((PRICEUNIT-(PRICEUNIT*(PTDISCOUNT/100)))-PDISCOUNT)*QTY)
+from ((productlist inner join product on plpid = pid) inner join producttype on pproducttype = ptid)
+where plbillno = billno) as total_price,ccname as coupon,(select sum(((PRICEUNIT-(PRICEUNIT*(PTDISCOUNT/100)))-PDISCOUNT)*QTY)
+from ((productlist inner join product on plpid = pid) inner join producttype on pproducttype = ptid)
+where plbillno = billno) - CCDiscount as nettotal
+From (((((bill  inner join productlist on plbillno = billno )inner join product on plpid = pid) inner join discounttype d1 on PDISCOUNTTYPE = d1.DTID) inner join ProductType on PPRODUCTTYPE = PTID) inner join discounttype d2 on PTDISCOUNTTYPE = d2.DTID) inner join cashcoupon on billccid = ccid;
+
+
+(select sum(((PRICEUNIT*QTY)
+from ((productlist inner join product on plpid = pid) inner join producttype on pproducttype = ptid)
+where plbillno = billno) as total_discount
+
+
+Select BILLNO,BILLDATE,BILLMEMTEL,BILLEMP,BILLCCID,PNAME,QTY,PRICEUNIT,PDISCOUNT,d1.DTNAME,PTDISCOUNT,d2.DTNAME,PRICEUNIT*QTY as price,((PRICEUNIT*(PTDISCOUNT/100))+PDISCOUNT)*QTY as discount,((PRICEUNIT-(PRICEUNIT*(PTDISCOUNT/100)))-PDISCOUNT)*QTY as total,(select sum(PRICEUNIT*QTY)
+from ((productlist inner join product on plpid = pid) inner join producttype on pproducttype = ptid)
+where plbillno = billno) as total_prices,(select sum(((PRICEUNIT*(PTDISCOUNT/100))+PDISCOUNT)*QTY)
+from ((productlist inner join product on plpid = pid) inner join producttype on pproducttype = ptid)
+where plbillno = billno) as total_discount,(select sum(((PRICEUNIT-(PRICEUNIT*(PTDISCOUNT/100)))-PDISCOUNT)*QTY)
+from ((productlist inner join product on plpid = pid) inner join producttype on pproducttype = ptid)
+where plbillno = billno) as totals,ccname as coupon,(select sum(((PRICEUNIT-(PRICEUNIT*(PTDISCOUNT/100)))-PDISCOUNT)*QTY)
+from ((productlist inner join product on plpid = pid) inner join producttype on pproducttype = ptid)
+where plbillno = billno) - CCDiscount as nettotal
+From (((((bill  inner join productlist on plbillno = billno )inner join product on plpid = pid) inner join discounttype d1 on PDISCOUNTTYPE = d1.DTID) inner join ProductType on PPRODUCTTYPE = PTID) inner join discounttype d2 on PTDISCOUNTTYPE = d2.DTID) inner join cashcoupon on billccid = ccid;
+
